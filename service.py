@@ -1,36 +1,13 @@
-import ctypes
-import subprocess
 import time
 import win32serviceutil
 import win32service
 import win32event
 import servicemanager
 import socket
-from sdl2 import *
+from joystick import Joystick
 
-
-class Joystick:
-    def __init__(self):
-        SDL_Init(SDL_INIT_JOYSTICK)
-
-    def update(self):
-        event = SDL_Event()
-        while SDL_PollEvent(ctypes.byref(event)) != 0:
-            if event.type == SDL_JOYDEVICEADDED:
-                self.device = SDL_JoystickOpen(event.jdevice.which)
-                self.deviceid = SDL_JoystickGetDeviceInstanceID(event.jdevice.which)
-                # print(F"joy added: {self.deviceid}")
-                # print(F"num joy: {SDL_NumJoysticks()}")
-            elif event.type == SDL_JOYDEVICEREMOVED:
-                # print(F"joy removed: {event.jdevice.which}")
-                if self.deviceid == event.jdevice.which:
-                    SDL_JoystickClose(self.device)
-                # print(F"num joy: {SDL_NumJoysticks()}")
-            elif event.type == SDL_JOYBUTTONUP:
-                # print("Button up!")
-                subprocess.run(["C:\\Program Files\\reWASD\\reWASDCommandLine.exe",
-                                "apply", "--id", "113426740372824", "--path", "C:\\Users\\Public\\Documents\\reWASD\\Profiles\\Desktop\\Controller\\Config 1.rewasd", "--slot", "slot1"])
-
+# https://stackoverflow.com/questions/32404/how-do-you-run-a-python-script-as-a-service-in-windows
+# https://stackoverflow.com/questions/63754895/how-to-create-windows-service-using-python
 
 class AppServerSvc (win32serviceutil.ServiceFramework):
     _svc_name_ = "GamepadHook"
